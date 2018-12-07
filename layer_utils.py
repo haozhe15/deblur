@@ -13,7 +13,7 @@ def res_block(inputs, filters, kernel_size=(3, 3), strides=(1, 1), use_dropout=F
     :return: Output tensor
     """
     paddings = tf.constant([[0,0],[1,1],[1,1],[0,0]])
-    # Use tf.pad directly instead of using ReflectionPadding2D
+    #  Use tf.pad directly instead of using ReflectionPadding2D
     x_1 = tf.pad(inputs, paddings, "REFLECT")
     conv_1 = tf.layers.conv2d(inputs=x_1,filters=filters,kernel_size=kernel_size,strides=strides)
     norm_1 = tf.contrib.layers.instance_norm(conv_1)
