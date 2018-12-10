@@ -34,12 +34,6 @@ def train_multiple_outputs(n_images,
     data = load_images(input_dir, n_images)
     y_train, x_train = data['B'], data['A']
 
-    p = np.random.permutation(len(x_train))
-    y_train, x_train = y_train[p], x_train[p]
-
-    p = np.random.permutation(len(x_train))
-    y_train, x_train = y_train[p], x_train[p]
-
     g = generator_model()
     d = discriminator_model()
     d_on_g = generator_containing_discriminator_multiple_outputs(g, d)
