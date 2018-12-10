@@ -15,20 +15,38 @@ from keras.optimizers import Adam
 
 def save_all_weights(d, g, epoch_number, current_loss, weights_dir):
     now = datetime.datetime.now()
-    save_dir = os.path.join(weights_dir, '{}{}'.format(now.month, now.day))
+    save_dir = os.path.join(weights_dir, '{}-{}-{}-{}'.format(now.month, now.day, now.hour, now.minute))
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
     g.save_weights(os.path.join(save_dir, 'generator_{}_{}.h5'.format(epoch_number, current_loss)), True)
     d.save_weights(os.path.join(save_dir, 'discriminator_{}.h5'.format(epoch_number)), True)
 
 
-def train_multiple_outputs(n_images, batch_size, input_dir, log_dir, weights_dir, epoch_num, critic_updates=5):
+def train_multiple_outputs(n_images, 
+                            batch_size, 
+                            input_dir, 
+                            log_dir, 
+                            weights_dir, 
+                            generator_weights, 
+                            discriminator_weights, 
+                            use_transfer, 
+                            epoch_num, 
+                            critic_updates=5):
     data = load_images(input_dir, n_images)
     y_train, x_train = data['B'], data['A']
 
     g = generator_model()
     d = discriminator_model()
     d_on_g = generator_containing_discriminator_multiple_outputs(g, d)
+
+    if generator_weights != None:
+        g.load_weights(generator_weights)
+    if discriminator_weights != None:
+        d.load_weights(discriminator_weights)
+    
+    if use_transfer:
+        #TODO
+        pass
 
     d_opt = Adam(lr=1E-4, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
     d_on_g_opt = Adam(lr=1E-4, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
@@ -72,10 +90,12 @@ def train_multiple_outputs(n_images, batch_size, input_dir, log_dir, weights_dir
 
         # write_log(tensorboard_callback, ['g_loss', 'd_on_g_loss'], [np.mean(d_losses), np.mean(d_on_g_losses)], epoch_num)
         print(np.mean(d_losses), np.mean(d_on_g_losses))
-        with open('log.txt', 'a+') as f:
+
+        with open(os.path.join(log_dir, 'train_loss.txt'), 'a+') as f:
             f.write('{} - {} - {}\n'.format(epoch, np.mean(d_losses), np.mean(d_on_g_losses)))
 
-        save_all_weights(d, g, epoch, int(np.mean(d_on_g_losses)))
+        print(np.mean(d_on_g_losses))
+        save_all_weights(d, g, epoch, np.int(np.mean(d_on_g_losses)), weights_dir)
 
 
 @click.command()
@@ -83,11 +103,33 @@ def train_multiple_outputs(n_images, batch_size, input_dir, log_dir, weights_dir
 @click.option('--batch_size', default=16, help='Size of batch')
 @click.option('--input_dir', required=True, help='Path to train images')
 @click.option('--log_dir', default='log/', help='Path to the log_dir for Tensorboard')
-@click.option('--weights_dir', default='weights/', help='Path to trained weights')
+@click.option('--weights_dir', default='weights/', help='Path to strore trained weights')
+@click.option('--generator_weights', default=None, help='Path to generator weights')
+@click.option('--discriminator_weights', default=None, help='Path to discriminator weights')
+@click.option('--use_transfer', default=False, help='Use transfer learning or not')
 @click.option('--epoch_num', default=4, help='Number of epochs for training')
 @click.option('--critic_updates', default=5, help='Number of discriminator training')
-def train_command(n_images, batch_size, input_dir, log_dir, epoch_num, critic_updates):
-    return train_multiple_outputs(n_images, batch_size, input_dir, log_dir, weights_dir, epoch_num, critic_updates)
+def train_command(n_images, 
+                    batch_size, 
+                    input_dir, 
+                    log_dir, 
+                    weights_dir, 
+                    generator_weights, 
+                    discriminator_weights, 
+                    use_transfer, 
+                    epoch_num, 
+                    critic_updates):
+
+    return train_multiple_outputs(n_images, 
+                                    batch_size, 
+                                    input_dir, 
+                                    log_dir, 
+                                    weights_dir, 
+                                    generator_weights, 
+                                    discriminator_weights, 
+                                    use_transfer, 
+                                    epoch_num, 
+                                    critic_updates)
 
 
 if __name__ == '__main__':
