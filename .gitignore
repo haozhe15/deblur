@@ -122,8 +122,13 @@ dmypy.json
 
 # Datasets
 datasets
+images
 myresults
 weights
 log
 data
 samples
+
+# Test
+test.out
+test.err
