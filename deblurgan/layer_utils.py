@@ -7,7 +7,10 @@ from keras.layers import Input, Conv2D, Activation, BatchNormalization
 from keras.layers.merge import Add
 from keras.utils import conv_utils
 from keras.layers.core import Dropout
-
+try:
+    from conv_utils import normalize_data_format
+except ImportError:
+    from keras.backend.common import normalize_data_format
 
 def res_block(input, filters, kernel_size=(3, 3), strides=(1, 1), use_dropout=False):
     """
@@ -114,16 +117,16 @@ class ReflectionPadding2D(Layer):
                  data_format=None,
                  **kwargs):
         super(ReflectionPadding2D, self).__init__(**kwargs)
-        self.data_format = conv_utils.normalize_data_format(data_format)
+        self.data_format = normalize_data_format(data_format)
         if isinstance(padding, int):
             self.padding = ((padding, padding), (padding, padding))
         elif hasattr(padding, '__len__'):
             if len(padding) != 2:
                 raise ValueError('`padding` should have two elements. '
                                  'Found: ' + str(padding))
-            height_padding = conv_utils.normalize_tuple(padding[0], 2,
+            height_padding = normalize_tuple(padding[0], 2,
                                                         '1st entry of padding')
-            width_padding = conv_utils.normalize_tuple(padding[1], 2,
+            width_padding = normalize_tuple(padding[1], 2,
                                                        '2nd entry of padding')
             self.padding = (height_padding, width_padding)
         else:
