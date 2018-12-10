@@ -9,7 +9,7 @@ from keras.utils import conv_utils
 from keras.layers.core import Dropout
 try:
     normalize_data_format = conv_utils.normalize_data_format
-except ImportError:
+except:
     from keras.backend.common import normalize_data_format
 
 def res_block(input, filters, kernel_size=(3, 3), strides=(1, 1), use_dropout=False):
