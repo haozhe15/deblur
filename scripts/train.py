@@ -22,15 +22,15 @@ def save_all_weights(d, g, epoch_number, current_loss, weights_dir):
     d.save_weights(os.path.join(save_dir, 'discriminator_{}.h5'.format(epoch_number)), True)
 
 
-def train_multiple_outputs(n_images, 
-                            batch_size, 
-                            input_dir, 
-                            log_dir, 
-                            weights_dir, 
-                            generator_weights, 
-                            discriminator_weights, 
-                            use_transfer, 
-                            epoch_num, 
+def train_multiple_outputs(n_images,
+                            batch_size,
+                            input_dir,
+                            log_dir,
+                            weights_dir,
+                            generator_weights,
+                            discriminator_weights,
+                            use_transfer,
+                            epoch_num,
                             critic_updates=5):
     data = load_images(input_dir, n_images)
     y_train, x_train = data['B'], data['A']
@@ -43,10 +43,16 @@ def train_multiple_outputs(n_images,
         g.load_weights(generator_weights)
     if discriminator_weights != None:
         d.load_weights(discriminator_weights)
-    
+
     if use_transfer:
-        #TODO
-        pass
+        for layer in g.layers:
+            layer.trainable=False
+        for layer in g.layers[:-3]:
+            layer.trainable=True
+        for layer in d.layers:
+            layer.trainable=False
+        for layer in d.layers[:-3]:
+            layer.trainable=True
 
     d_opt = Adam(lr=1E-4, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
     d_on_g_opt = Adam(lr=1E-4, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
@@ -109,26 +115,26 @@ def train_multiple_outputs(n_images,
 @click.option('--use_transfer', default=False, help='Use transfer learning or not')
 @click.option('--epoch_num', default=4, help='Number of epochs for training')
 @click.option('--critic_updates', default=5, help='Number of discriminator training')
-def train_command(n_images, 
-                    batch_size, 
-                    input_dir, 
-                    log_dir, 
-                    weights_dir, 
-                    generator_weights, 
-                    discriminator_weights, 
-                    use_transfer, 
-                    epoch_num, 
+def train_command(n_images,
+                    batch_size,
+                    input_dir,
+                    log_dir,
+                    weights_dir,
+                    generator_weights,
+                    discriminator_weights,
+                    use_transfer,
+                    epoch_num,
                     critic_updates):
 
-    return train_multiple_outputs(n_images, 
-                                    batch_size, 
-                                    input_dir, 
-                                    log_dir, 
-                                    weights_dir, 
-                                    generator_weights, 
-                                    discriminator_weights, 
-                                    use_transfer, 
-                                    epoch_num, 
+    return train_multiple_outputs(n_images,
+                                    batch_size,
+                                    input_dir,
+                                    log_dir,
+                                    weights_dir,
+                                    generator_weights,
+                                    discriminator_weights,
+                                    use_transfer,
+                                    epoch_num,
                                     critic_updates)
 
 
