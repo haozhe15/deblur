@@ -125,8 +125,8 @@ def train_command(n_images,
                     critic_updates):
     if not os.path.exists(log_dir):
         os.makedirs(log_dir)
-    if not os.path.exists(weight_dir):
-        os.makedirs(weight_dir)
+    if not os.path.exists(weights_dir):
+        os.makedirs(weights_dir)
     return train_multiple_outputs(n_images,
                                     batch_size,
                                     input_dir,
