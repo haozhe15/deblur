@@ -4,6 +4,9 @@ import click
 import numpy as np
 import tqdm
 
+import sys
+print(sys.path)
+
 from deblurgan.utils import load_images, write_log
 from deblurgan.losses import wasserstein_loss, perceptual_loss
 from deblurgan.model import generator_model, discriminator_model, generator_containing_discriminator_multiple_outputs
