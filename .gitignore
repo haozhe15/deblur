@@ -117,7 +117,12 @@ dmypy.json
 .vscode
 .idea
 
+# Macos
+.DS_Store
+
 # Datasets
 GOPRO_Large
 images
+DIV2K
+myresults
 log

@@ -5,6 +5,8 @@ import click
 from deblurgan.model import generator_model
 from deblurgan.utils import load_images, deprocess_image
 
+# input_dir = './images/test', './DIV2K/test' 
+# output_dir = 'myresults'
 
 def test(batch_size, input_dir, output_dir):
     data = load_images(input_dir, batch_size)
