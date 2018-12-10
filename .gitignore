@@ -121,8 +121,6 @@ dmypy.json
 .DS_Store
 
 # Datasets
-GOPRO_Large
-images
-DIV2K
+datasets
 myresults
 log

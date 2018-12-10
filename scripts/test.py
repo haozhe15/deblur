@@ -1,3 +1,4 @@
+import os
 import numpy as np
 from PIL import Image
 import click
@@ -5,7 +6,7 @@ import click
 from deblurgan.model import generator_model
 from deblurgan.utils import load_images, deprocess_image
 
-# input_dir = './images/test', './DIV2K/test' 
+# input_dir = 'datasets/images/test', 'datasets/DIV2K/test' 
 # output_dir = 'myresults'
 
 def test(batch_size, input_dir, output_dir, generator_weights):
@@ -31,7 +32,7 @@ def test(batch_size, input_dir, output_dir, generator_weights):
 @click.option('--batch_size', default=4, help='Number of images to process')
 @click.option('--input_dir', required=True, help='Path to input images')
 @click.option('--output_dir', required=True, help='Path to output images')
-@click.option('--generator_weights', default=None, help='Path to generator weights')
+@click.option('--generator_weights', default='generator.h5', help='Path to generator weights')
 def test_command(batch_size, input_dir, output_dir, generator_weights):
     return test(batch_size, input_dir, output_dir, generator_weights)
 
