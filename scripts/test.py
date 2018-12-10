@@ -5,10 +5,11 @@ import click
 from deblurgan.model import generator_model
 from deblurgan.utils_hw import load_images, deprocess_image
 
+# input_dir = './images/test', './DIV2K/test' 
+# output_dir = 'myresults'
 
-def test(batch_size):
-    # data = load_images('./images/test', batch_size)
-    data = load_images('./DIV2K/test', batch_size)
+def test(batch_size, input_dir, output_dir):
+    data = load_images(input_dir, batch_size)
     y_test, x_test = data['B'], data['A']
     g = generator_model()
     g.load_weights('generator.h5')
@@ -23,13 +24,15 @@ def test(batch_size):
         img = generated[i, :, :, :]
         output = np.concatenate((y, x, img), axis=1)
         im = Image.fromarray(output.astype(np.uint8))
-        im.save('myresults/results{}.png'.format(i))
+        im.save(os.path.join(output_dir, 'results{}.png'.format(i)))
 
 
 @click.command()
 @click.option('--batch_size', default=4, help='Number of images to process')
-def test_command(batch_size):
-    return test(batch_size)
+@click.option('--input_dir', required=True, help='Path to input images')
+@click.option('--output_dir', required=True, help='Path to output images')
+def test_command(batch_size, input_dir, output_dir):
+    return test(batch_size, input_dir, output_dir)
 
 
 if __name__ == "__main__":

@@ -11,20 +11,19 @@ from deblurgan.model import generator_model, discriminator_model, generator_cont
 from keras.callbacks import TensorBoard
 from keras.optimizers import Adam
 
-BASE_DIR = 'weights/'
 
 
-def save_all_weights(d, g, epoch_number, current_loss):
+def save_all_weights(d, g, epoch_number, current_loss, weights_dir):
     now = datetime.datetime.now()
-    save_dir = os.path.join(BASE_DIR, '{}{}'.format(now.month, now.day))
+    save_dir = os.path.join(weights_dir, '{}{}'.format(now.month, now.day))
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
     g.save_weights(os.path.join(save_dir, 'generator_{}_{}.h5'.format(epoch_number, current_loss)), True)
     d.save_weights(os.path.join(save_dir, 'discriminator_{}.h5'.format(epoch_number)), True)
 
 
-def train_multiple_outputs(n_images, batch_size, log_dir, epoch_num, critic_updates=5):
-    data = load_images('./images/train', n_images)
+def train_multiple_outputs(n_images, batch_size, input_dir, log_dir, weights_dir, epoch_num, critic_updates=5):
+    data = load_images(input_dir, n_images)
     y_train, x_train = data['B'], data['A']
 
     g = generator_model()
@@ -44,8 +43,7 @@ def train_multiple_outputs(n_images, batch_size, log_dir, epoch_num, critic_upda
 
     output_true_batch, output_false_batch = np.ones((batch_size, 1)), -np.ones((batch_size, 1))
 
-    log_path = './logs'
-    tensorboard_callback = TensorBoard(log_path)
+    tensorboard_callback = TensorBoard(log_dir)
 
     for epoch in tqdm.tqdm(range(epoch_num)):
         permutated_indexes = np.random.permutation(x_train.shape[0])
@@ -83,11 +81,13 @@ def train_multiple_outputs(n_images, batch_size, log_dir, epoch_num, critic_upda
 @click.command()
 @click.option('--n_images', default=-1, help='Number of images to load for training')
 @click.option('--batch_size', default=16, help='Size of batch')
-@click.option('--log_dir', required=True, help='Path to the log_dir for Tensorboard')
+@click.option('--input_dir', required=True, help='Path to train images')
+@click.option('--log_dir', default='log/', help='Path to the log_dir for Tensorboard')
+@click.option('--weights_dir', default='weights/', help='Path to trained weights')
 @click.option('--epoch_num', default=4, help='Number of epochs for training')
 @click.option('--critic_updates', default=5, help='Number of discriminator training')
-def train_command(n_images, batch_size, log_dir, epoch_num, critic_updates):
-    return train_multiple_outputs(n_images, batch_size, log_dir, epoch_num, critic_updates)
+def train_command(n_images, batch_size, input_dir, log_dir, epoch_num, critic_updates):
+    return train_multiple_outputs(n_images, batch_size, input_dir, log_dir, weights_dir, epoch_num, critic_updates)
 
 
 if __name__ == '__main__':
