@@ -124,9 +124,9 @@ class ReflectionPadding2D(Layer):
             if len(padding) != 2:
                 raise ValueError('`padding` should have two elements. '
                                  'Found: ' + str(padding))
-            height_padding = normalize_tuple(padding[0], 2,
+            height_padding = conv_utils.normalize_tuple(padding[0], 2,
                                                         '1st entry of padding')
-            width_padding = normalize_tuple(padding[1], 2,
+            width_padding = conv_utils.normalize_tuple(padding[1], 2,
                                                        '2nd entry of padding')
             self.padding = (height_padding, width_padding)
         else:
