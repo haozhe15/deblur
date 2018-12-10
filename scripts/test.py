@@ -8,11 +8,11 @@ from deblurgan.utils import load_images, deprocess_image
 # input_dir = './images/test', './DIV2K/test' 
 # output_dir = 'myresults'
 
-def test(batch_size, input_dir, output_dir):
+def test(batch_size, input_dir, output_dir, generator_weights):
     data = load_images(input_dir, batch_size)
     y_test, x_test = data['B'], data['A']
     g = generator_model()
-    g.load_weights('generator.h5')
+    g.load_weights(generator_weights)
     generated_images = g.predict(x=x_test, batch_size=batch_size)
     generated = np.array([deprocess_image(img) for img in generated_images])
     x_test = deprocess_image(x_test)
@@ -31,8 +31,9 @@ def test(batch_size, input_dir, output_dir):
 @click.option('--batch_size', default=4, help='Number of images to process')
 @click.option('--input_dir', required=True, help='Path to input images')
 @click.option('--output_dir', required=True, help='Path to output images')
-def test_command(batch_size, input_dir, output_dir):
-    return test(batch_size, input_dir, output_dir)
+@click.option('--generator_weights', default=None, help='Path to generator weights')
+def test_command(batch_size, input_dir, output_dir, generator_weights):
+    return test(batch_size, input_dir, output_dir, generator_weights)
 
 
 if __name__ == "__main__":
