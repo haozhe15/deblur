@@ -116,3 +116,8 @@ dmypy.json
 # IDE
 .vscode
 .idea
+
+# Datasets
+GOPRO_Large
+images
+log
