@@ -123,6 +123,7 @@ dmypy.json
 # Datasets
 datasets
 myresults
+weights
 log
 data
 samples
