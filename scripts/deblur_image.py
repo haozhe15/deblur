@@ -1,3 +1,4 @@
+import os
 import numpy as np
 from PIL import Image
 import click
@@ -6,7 +7,7 @@ from deblurgan.model import generator_model
 from deblurgan.utils import load_image, deprocess_image, preprocess_image
 
 
-def deblur(image_path):
+def deblur(image_path, output_dir):
     data = {
         'A_paths': [image_path],
         'A': np.array([preprocess_image(load_image(image_path))])
@@ -23,14 +24,16 @@ def deblur(image_path):
         img = generated[i, :, :, :]
         output = np.concatenate((x, img), axis=1)
         im = Image.fromarray(output.astype(np.uint8))
-        # im.save('deblur'+image_path)
-        im.save('mydeblur/my-result.png')
+        im.save(os.path.join(output_dir, os.path.basename(image_path)))
 
 
 @click.command()
 @click.option('--image_path', help='Image to deblur')
-def deblur_command(image_path):
-    return deblur(image_path)
+@click.option('--output_dir', default='samples', help='Path to deblurred images.')
+def deblur_command(image_path, output_dir):
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    return deblur(image_path, output_dir)
 
 
 if __name__ == "__main__":
