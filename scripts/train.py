@@ -22,15 +22,15 @@ def save_all_weights(d, g, epoch_number, current_loss, weights_dir):
     d.save_weights(os.path.join(save_dir, 'discriminator_{}.h5'.format(epoch_number)), True)
 
 
-def train_multiple_outputs(n_images, 
-                            batch_size, 
-                            input_dir, 
-                            log_dir, 
-                            weights_dir, 
-                            generator_weights, 
-                            discriminator_weights, 
-                            use_transfer, 
-                            epoch_num, 
+def train_multiple_outputs(n_images,
+                            batch_size,
+                            input_dir,
+                            log_dir,
+                            weights_dir,
+                            generator_weights,
+                            discriminator_weights,
+                            use_transfer,
+                            epoch_num,
                             critic_updates=5):
     data = load_images(input_dir, n_images)
     y_train, x_train = data['B'], data['A']
@@ -43,16 +43,22 @@ def train_multiple_outputs(n_images,
         g.load_weights(generator_weights)
     if discriminator_weights != None:
         d.load_weights(discriminator_weights)
-    
-    if use_transfer:
-        #TODO
-        pass
 
     d_opt = Adam(lr=1E-4, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
     d_on_g_opt = Adam(lr=1E-4, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
 
+    def freeze_except(m, i, j):
+        for layer in m.layers:
+            layer.trainable=False
+        for layer in m.layers[i:j]:
+            layer.trainable=True
+
     d.trainable = True
+    if use_transfer:
+        freeze_except(g, -4, -2)
+        freeze_except(d, -2, None)
     d.compile(optimizer=d_opt, loss=wasserstein_loss)
+
     d.trainable = False
     loss = [perceptual_loss, wasserstein_loss]
     loss_weights = [100, 1]
@@ -87,6 +93,8 @@ def train_multiple_outputs(n_images,
             d_on_g_losses.append(d_on_g_loss)
 
             d.trainable = True
+            if use_transfer:
+                freeze_except(d, -2, None)
 
         # write_log(tensorboard_callback, ['g_loss', 'd_on_g_loss'], [np.mean(d_losses), np.mean(d_on_g_losses)], epoch_num)
         print(np.mean(d_losses), np.mean(d_on_g_losses))
@@ -109,26 +117,26 @@ def train_multiple_outputs(n_images,
 @click.option('--use_transfer', default=False, help='Use transfer learning or not')
 @click.option('--epoch_num', default=4, help='Number of epochs for training')
 @click.option('--critic_updates', default=5, help='Number of discriminator training')
-def train_command(n_images, 
-                    batch_size, 
-                    input_dir, 
-                    log_dir, 
-                    weights_dir, 
-                    generator_weights, 
-                    discriminator_weights, 
-                    use_transfer, 
-                    epoch_num, 
+def train_command(n_images,
+                    batch_size,
+                    input_dir,
+                    log_dir,
+                    weights_dir,
+                    generator_weights,
+                    discriminator_weights,
+                    use_transfer,
+                    epoch_num,
                     critic_updates):
 
-    return train_multiple_outputs(n_images, 
-                                    batch_size, 
-                                    input_dir, 
-                                    log_dir, 
-                                    weights_dir, 
-                                    generator_weights, 
-                                    discriminator_weights, 
-                                    use_transfer, 
-                                    epoch_num, 
+    return train_multiple_outputs(n_images,
+                                    batch_size,
+                                    input_dir,
+                                    log_dir,
+                                    weights_dir,
+                                    generator_weights,
+                                    discriminator_weights,
+                                    use_transfer,
+                                    epoch_num,
                                     critic_updates)
 
 

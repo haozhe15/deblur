@@ -124,3 +124,5 @@ dmypy.json
 datasets
 myresults
 log
+data
+samples
