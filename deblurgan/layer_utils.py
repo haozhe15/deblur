@@ -8,7 +8,7 @@ from keras.layers.merge import Add
 from keras.utils import conv_utils
 from keras.layers.core import Dropout
 try:
-    from conv_utils import normalize_data_format
+    normalize_data_format = conv_utils.normalize_data_format
 except ImportError:
     from keras.backend.common import normalize_data_format
 
