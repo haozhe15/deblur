@@ -11,11 +11,9 @@ from deblurgan.model import generator_model, discriminator_model, generator_cont
 from keras.callbacks import TensorBoard
 from keras.optimizers import Adam
 
-
-
 def save_all_weights(d, g, epoch_number, current_loss, weights_dir):
     now = datetime.datetime.now()
-    save_dir = os.path.join(weights_dir, '{}-{}-{}-{}'.format(now.month, now.day, now.hour, now.minute))
+    save_dir = os.path.join(weights_dir, '{}-{}-{}'.format(now.month, now.day, now.hour))
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
     g.save_weights(os.path.join(save_dir, 'generator_{}_{}.h5'.format(epoch_number, current_loss)), True)
