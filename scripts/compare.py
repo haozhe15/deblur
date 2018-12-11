@@ -4,7 +4,7 @@ from PIL import Image
 import click
 
 from deblurgan.model import generator_model
-from deblurgan.utils import deprocess_image
+from deblurgan.utils import load_images, deprocess_image
 from patch import load_images
 
 # Compare different models
