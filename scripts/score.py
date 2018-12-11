@@ -74,7 +74,7 @@ def evaluate_command(input_dir, output_path, num):
                 os.path.basename(image), num_ssim, num_psnr
             )
             for image, num_ssim, num_psnr in zip(
-                images, num_full_ssim, num_full_ssim
+                images, num_full_ssim, num_full_psnr
             )
         ]))
         f.write("\n{}\n".format(message_mean_scores))
