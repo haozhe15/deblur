@@ -5,9 +5,10 @@ import click
 
 from deblurgan.model import generator_model
 from deblurgan.utils import load_images, deprocess_image
+from patch import load_images
 
 # Compare different models
-# input_dir = 'datasets/images/test', 'datasets/DIV2K/test' 
+# input_dir = 'datasets/images/test', 'datasets/DIV2K/test'
 # output_dir = 'myresults/compare'
 
 def compare(batch_size, input_dir, output_dir):
@@ -38,7 +39,7 @@ def compare(batch_size, input_dir, output_dir):
         output = np.concatenate((y, x, img_0, img_1, img_2), axis=1)
         im = Image.fromarray(output.astype(np.uint8))
         im.save(os.path.join(output_dir, 'results{}.png'.format(i)))
-        
+
         # store img seperately
         # im = Image.fromarray(img_0.astype(np.uint8))
         # im.save(os.path.join(output_dir, 'b0/results{}.png'.format(i)))
@@ -49,7 +50,7 @@ def compare(batch_size, input_dir, output_dir):
 
 
 @click.command()
-@click.option('--batch_size', default=4, help='Number of images to process')
+@click.option('--batch_size', default=100, help='Number of images to process')
 @click.option('--input_dir', required=True, help='Path to input images')
 @click.option('--output_dir', required=True, help='Path to output images')
 def compare_command(batch_size, input_dir, output_dir):

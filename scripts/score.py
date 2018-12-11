@@ -6,9 +6,9 @@ from skimage.measure import compare_ssim, compare_psnr
 
 
 def SSIM(X, Y, multichannel=True):
-    data_range = max(X.max() - X.min(), Y.max() - Y.min())
+    print(X.shape, Y.shape)
     scores = [
-        compare_ssim(x, y, data_range=data_range, multichannel=multichannel)
+        compare_ssim(x, y, multichannel=multichannel)
         for x, y in zip(X, Y)
     ]
     return np.mean(scores), scores
@@ -19,9 +19,8 @@ def SSIMs(X, Ys, multichannel=True):
 
 
 def PSNR(X, Y):
-    data_range = max(X.max() - X.min(), Y.max() - Y.min())
     scores = [
-        compare_psnr(x, y, data_range=data_range)
+        compare_psnr(x, y)
         for x, y in zip(X, Y)
     ]
     return np.mean(scores), scores,
@@ -51,7 +50,7 @@ def evaluate_images(input_dir, num):
 @click.command()
 @click.option('--input_dir', help='Test images to evalute')
 @click.option('--output_path', default='log/score.txt', help='Path to save resut scores')
-@click.option('--num', default=3, help='Number of output deblurred images to test')
+@click.option('--num', default=3, help='Number of images in a row')
 def evaluate_command(input_dir, output_path, num):
     if not os.path.exists(os.path.dirname(output_path)):
         os.makedirs(os.path.dirname(output_path))
