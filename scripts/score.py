@@ -51,7 +51,7 @@ def evaluate_images(input_dir, num):
 @click.command()
 @click.option('--input_dir', help='Test images to evalute')
 @click.option('--output_path', default='log/score.txt', help='Path to save resut scores')
-@click.option('--num', default=3, help='Number of output deblurred images to test')
+@click.option('--num', default=3, help='Number of images in a row')
 def evaluate_command(input_dir, output_path, num):
     if not os.path.exists(os.path.dirname(output_path)):
         os.makedirs(os.path.dirname(output_path))
