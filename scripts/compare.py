@@ -34,16 +34,18 @@ def compare(batch_size, input_dir, output_dir):
         img_1 = generated[1, i, :, :, :] # trainsfer learning
         img_2 = generated[2, i, :, :, :] # trainsfer learning with locked parameters
 
-        # output = np.concatenate((y, x, img_0, img_1, img_2), axis=1)
-        # im = Image.fromarray(outpt.astype(np.uint8))
-        # im.save(os.path.join(output_dir, 'results{}.png'.format(i)))
+        # combine imgs and store
+        output = np.concatenate((y, x, img_0, img_1, img_2), axis=1)
+        im = Image.fromarray(outpt.astype(np.uint8))
+        im.save(os.path.join(output_dir, 'results{}.png'.format(i)))
         
-        im = Image.fromarray(img_0.astype(np.uint8))
-        im.save(os.path.join(output_dir, 'b0/results{}.png'.format(i)))
-        im = Image.fromarray(img_1.astype(np.uint8))
-        im.save(os.path.join(output_dir, 'b1/results{}.png'.format(i)))
-        im = Image.fromarray(img_2.astype(np.uint8))
-        im.save(os.path.join(output_dir, 'b2/results{}.png'.format(i)))
+        # store img seperately
+        # im = Image.fromarray(img_0.astype(np.uint8))
+        # im.save(os.path.join(output_dir, 'b0/results{}.png'.format(i)))
+        # im = Image.fromarray(img_1.astype(np.uint8))
+        # im.save(os.path.join(output_dir, 'b1/results{}.png'.format(i)))
+        # im = Image.fromarray(img_2.astype(np.uint8))
+        # im.save(os.path.join(output_dir, 'b2/results{}.png'.format(i)))
 
 
 @click.command()
