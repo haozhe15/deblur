@@ -14,6 +14,7 @@ def compare(batch_size, input_dir, output_dir):
     data = load_images(input_dir, batch_size)
     y_test, x_test = data['B'], data['A']
     weights = ['generator.h5', 'weights/DIV2K_1/generator_3_374.h5','weights/DIV2K_2/generator_3_507.h5']
+    weights = ['generator.h5', 'weights/DIV2K_1/generator_3_374.h5','weights/DIV2K_2/generator_3_507.h5']
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
     generated = []
@@ -32,9 +33,17 @@ def compare(batch_size, input_dir, output_dir):
         img_0 = generated[0, i, :, :, :] # original
         img_1 = generated[1, i, :, :, :] # trainsfer learning
         img_2 = generated[2, i, :, :, :] # trainsfer learning with locked parameters
-        output = np.concatenate((y, x, img_0, img_1, img_2), axis=1)
-        im = Image.fromarray(output.astype(np.uint8))
-        im.save(os.path.join(output_dir, 'results{}.png'.format(i)))
+
+        # output = np.concatenate((y, x, img_0, img_1, img_2), axis=1)
+        # im = Image.fromarray(outpt.astype(np.uint8))
+        # im.save(os.path.join(output_dir, 'results{}.png'.format(i)))
+        
+        im = Image.fromarray(img_0.astype(np.uint8))
+        im.save(os.path.join(output_dir, 'b0/results{}.png'.format(i)))
+        im = Image.fromarray(img_1.astype(np.uint8))
+        im.save(os.path.join(output_dir, 'b1/results{}.png'.format(i)))
+        im = Image.fromarray(img_2.astype(np.uint8))
+        im.save(os.path.join(output_dir, 'b2/results{}.png'.format(i)))
 
 
 @click.command()
