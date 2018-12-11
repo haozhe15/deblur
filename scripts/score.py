@@ -32,20 +32,20 @@ def PSNRs(X, Ys):
 
 
 def evaluate_images(input_dir, num):
-    sharps, fake_groups = [], []
+    sharps, blur_fake_groups = [], []
     image_files = list_image_files(input_dir)
 
     for path in image_files:
         image = np.array(load_image(path))
         images = np.split(image, np.arange(0, RESHAPE[0] * num, RESHAPE[0], np.int32), 1)
-        image_y, image_x, fake_images = images[1], images[2], images[3:]
+        image_y, blur_fake_images = images[1], images[2:]
         sharps.append(image_y)
-        fake_groups.append(fake_images)
+        blur_fake_groups.append(blur_fake_images)
 
     sharps = np.array(sharps)
-    fake_groups = np.array(fake_groups)
+    blur_fake_groups = np.array(blur_fake_groups)
 
-    return image_files, SSIMs(sharps, fake_groups.swapaxes(0, 1)), PSNRs(sharps, fake_groups.swapaxes(0, 1))
+    return image_files, SSIMs(sharps, blur_fake_groups.swapaxes(0, 1)), PSNRs(sharps, blur_fake_groups.swapaxes(0, 1))
 
 
 @click.command()
@@ -68,7 +68,7 @@ def evaluate_command(input_dir, output_path, num):
     )
     print(message_mean_scores)
     with open(output_path, 'w') as f:
-        f.write('[Image] SSIM: [{0} Image], PSNR: [{0} Image]\n'.format(num-2))
+        f.write('[Image] SSIM: [{0} Image], PSNR: [{0} Image]\n'.format(num-1))
         f.write('\n'.join([
             '[{}] SSIM: {}, PSNR: {}'.format(
                 os.path.basename(image), num_ssim, num_psnr
