@@ -71,7 +71,7 @@ def evaluate_command(input_dir, output_path, num):
         f.write('[Image] SSIM: [{0} Image], PSNR: [{0} Image]\n'.format(num-2))
         f.write('\n'.join([
             '[{}] SSIM: {}, PSNR: {}'.format(
-                os.path.basename(image), num_ssim, num_ssim
+                os.path.basename(image), num_ssim, num_psnr
             )
             for image, num_ssim, num_psnr in zip(
                 images, num_full_ssim, num_full_ssim
