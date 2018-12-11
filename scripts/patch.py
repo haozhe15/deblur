@@ -1,4 +1,5 @@
 import os
+import random
 import numpy as np
 
 from deblurgan.utils import load_image, list_image_files
@@ -15,6 +16,8 @@ def load_images(path, n_images):
         n_images = float("inf")
     A_paths, B_paths = os.path.join(path, 'A'), os.path.join(path, 'B')
     all_A_paths, all_B_paths = list_image_files(A_paths), list_image_files(B_paths)
+    p = np.random.permutation(len(all_A_paths))
+    all_A_paths, all_B_paths = np.array(all_A_paths)[p], np.array(all_B_paths)[p]
     images_A, images_B = [], []
     images_A_paths, images_B_paths = [], []
     for path_A, path_B in zip(all_A_paths, all_B_paths):
@@ -25,7 +28,6 @@ def load_images(path, n_images):
         images_A_paths.append(path_A)
         images_B_paths.append(path_B)
         if len(images_A) > n_images - 1: break
-
     return {
         'A': np.array(images_A),
         'A_paths': np.array(images_A_paths),
