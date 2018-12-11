@@ -6,9 +6,9 @@ from skimage.measure import compare_ssim, compare_psnr
 
 
 def SSIM(X, Y, multichannel=True):
-    data_range = max(X.max() - X.min(), Y.max() - Y.min())
+    print(X.shape, Y.shape)
     scores = [
-        compare_ssim(x, y, data_range=data_range, multichannel=multichannel)
+        compare_ssim(x, y, multichannel=multichannel)
         for x, y in zip(X, Y)
     ]
     return np.mean(scores), scores
@@ -19,9 +19,8 @@ def SSIMs(X, Ys, multichannel=True):
 
 
 def PSNR(X, Y):
-    data_range = max(X.max() - X.min(), Y.max() - Y.min())
     scores = [
-        compare_psnr(x, y, data_range=data_range)
+        compare_psnr(x, y)
         for x, y in zip(X, Y)
     ]
     return np.mean(scores), scores,

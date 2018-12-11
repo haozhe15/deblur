@@ -5,8 +5,9 @@ import click
 
 from deblurgan.model import generator_model
 from deblurgan.utils import load_images, deprocess_image
+# from patch import load_images
 
-# input_dir = 'datasets/images/test', 'datasets/DIV2K/test' 
+# input_dir = 'datasets/images/test', 'datasets/DIV2K/test'
 # output_dir = 'myresults'
 
 def test(batch_size, input_dir, output_dir, generator_weights):
@@ -34,6 +35,8 @@ def test(batch_size, input_dir, output_dir, generator_weights):
 @click.option('--output_dir', required=True, help='Path to output images')
 @click.option('--generator_weights', default='generator.h5', help='Path to generator weights')
 def test_command(batch_size, input_dir, output_dir, generator_weights):
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
     return test(batch_size, input_dir, output_dir, generator_weights)
 
 
