@@ -9,4 +9,8 @@ python scripts/test.py --batch_size=10 --input_dir 'datasets/DIV2K/test' --outpu
 python scripts/compare.py --batch_size=100 --input_dir 'datasets/DIV2K/test' --output_dir 'myresults/DIV2K_compare' 
 python scripts/score.py --input_dir 'myresults/DIV2K_compare' --num 5  
 
+python scripts/compare.py --batch_size=100 --input_dir 'datasets/CERTH' --output_dir 'myresults/CERTH_compare' 
+python scripts/score.py --input_dir 'myresults/CERTH_compare' --num 5 
+
 python scripts/compare.py --batch_size=20 --input_dir 'datasets/images/test' --output_dir 'myresults/GOPRO' 
+git checkout jon && git pull && git checkout master && git merge jon   
